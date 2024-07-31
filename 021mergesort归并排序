@@ -1,0 +1,67 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<bits/stdc++.h>
+using namespace std;
+#define max 500
+int arr[max];
+int help[max];
+
+
+void merge(int l, int r)
+{
+	int i = l;
+	int a = l;
+	int m = (l + r) >> 1;
+	int b = m + 1;
+	while (a <= m && b <= r)
+		help[i++] = arr[a] <= arr[b] ? arr[a++] : arr[b++];
+	while (a <= m)
+		help[i++] = arr[a++];
+	while (b <= r)
+		help[i++] = arr[b++];
+	for (i = l; i <= r; i++)
+	{
+		arr[i] = help[i];
+	}
+}
+void mergesort1(int l, int r)
+{
+	if (l == r) {
+		return;
+	}
+	int m = (l + r) >> 1;
+	mergesort1(l, m);
+	mergesort1(m + 1, r);
+	merge(l, r);
+}
+
+void mergesort2(int n)//非递归版本
+{
+	int step;
+	int l, r,m;
+	int i;
+	for (step = 1; step < n; step <<= 1)
+	{
+		l = 0;
+		while (l < n)
+		{
+			m = l + step - 1;
+			if (m + 1 >= n)break;//已经没有右侧了
+			r = min(l+ (step << 1) - 1, n - 1);//有右侧，求右侧的右边界
+			merge(l, r);
+			l = r + 1;
+		}
+	}
+}
+
+int main()
+{
+	int i;
+	int n;
+	cin >> n;
+	for (i = 0; i < n; i++)
+		cin >> arr[i];
+	mergesort1(0, n-1);
+	for (i = 0; i < n; i++)
+		cout << arr[i] << " ";
+	return 0;
+}
