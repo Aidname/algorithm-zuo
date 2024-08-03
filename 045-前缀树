@@ -1,0 +1,96 @@
+ https://www.nowcoder.com/practice/c552d3b4dfda49ccb883a6371d9a6932
+
+#include<bits/stdc++.h>
+using namespace std;
+
+const int N = 450;
+
+class Solution
+{
+private:
+	vector<int>ans;
+	int cnt;//cnt代表结点
+	int tree[N][13];
+	int pass[N];//代表通过这个结点的数量
+	int end[N];//代表以该结点为结尾的字符串的数量
+	
+
+	string vec_to_str(vector<int>arr)
+	{
+		string ans;
+		ans.clear();
+
+		for (int i = 1; i <= arr.size() - 1; i++)
+		{
+			ans.append(to_string(arr[i] - arr[i - 1]));
+			ans += '#';
+		}
+		cout << ans << endl;
+		return ans;
+	}
+
+	int transform(const char& c)
+	{
+		if (c >= '0' && c <= '9')
+			return c - '0';
+		else if (c == '#')
+			return 10;
+		else return 11;
+	}
+
+	void insert(string word)
+	{
+		int cur = 1,path;
+		pass[cur]++;
+
+		for (auto &c:word	)
+		{
+			path = transform(c);
+			if (tree[cur][path] == 0)
+			{
+				tree[cur][path] = ++cnt;
+			}
+			cur = tree[cur][path];
+			pass[cur]++;
+		}
+		end[cur]++;
+	}
+
+	int search(string word)
+	{
+		int cur = 1,path;
+		for (auto& c : word)
+		{
+			path = transform(c);
+			if (tree[cur][path] == 0)return 0;
+			else cur = tree[cur][path];
+		}
+		return pass[cur];//因为a可能比b长，所以a的end不代表b的结尾，用pass;
+	}
+	void word_clear()
+	{
+		memset(&pass, 0, sizeof(int) * (cnt + 1));
+		memset(&end[0], 0, sizeof(int) * (cnt + 1));
+		memset(&tree[0][0], 0, sizeof(int) * 12 * (cnt + 1));
+	}
+public:
+	vector<int> countConsistentKeys(vector<vector<int> >& b, vector<vector<int> >& a)
+	{
+		cnt = 1;
+		ans.clear();
+
+		// 将 a 作为答案放入 Trie
+		for (const auto& e : a) // e 是 a[i]
+		{
+			insert(vec_to_str(e)); // 将 e 变成 word 再加入字典树
+		}
+		for (const auto& e : b) // e 是 b[i]
+		{
+			ans.push_back(search(vec_to_str(e))); // 在 a 中找 b 为前缀的单词
+		}
+
+		word_clear(); // 重置字典树
+
+		return ans;
+	}
+};
