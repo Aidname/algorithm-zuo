@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int a[100] = { 9,5,4,6,3,7,8 };
+void   qsort(int l, int r)//快速排序能快的原因是因为每次都一次性把中间值放在正确的位置，要确保l<r，否则会一直递归，错误；
+{
+	if (r - l <= 0)	return;
+	int m = a[(l + r-1) >> 1];
+	int i = l, j = r-1;
+	while (1)
+	{
+		while (a[i] < m) { i++; }
+		while (a[j] > m) { j--; }
+		if (i < j)swap(a[i], a[j]);
+		else break;
+	}
+	qsort(l, i );
+	qsort(i + 1, r);
+}
+
+int main()
+{
+	int i;
+	int n = 7;
+	for (i = 0; i < n; i++)
+		cout << a[i] << " ";
+	cout << endl << endl;
+	qsort(0, n);
+	
+	for (i = 0; i < n; i++)
+		cout << a[i] << " ";
+}
