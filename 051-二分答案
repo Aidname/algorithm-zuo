@@ -1,0 +1,78 @@
+1.估计答案的范围
+2.分析答案和题目限制条件的单调性
+3.构建f函数，判断答案是否符合条件
+
+https://leetcode.cn/problems/koko-eating-bananas/
+
+class Solution {
+public:
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int r = 0, l = 1;
+        int ans = 0;
+        for (auto& v : piles)
+            r = max(v, r);
+        while (l <= r)
+        {
+            int k = (l + r) >> 1;
+            if (fun(k, piles) <= h)
+            {
+                ans = k;
+                r = k - 1;
+            }
+            else l = k + 1;
+        }
+        return ans;
+    }
+    long fun(int k, vector<int>piles)
+    {
+        int i;
+        long ans = 0;
+        int n = piles.size();
+        for (i = 0; i < n; i++)
+        {
+            ans += (piles[i] + k - 1) / k;
+        }
+        return ans;
+    }
+};
+
+ https://leetcode.cn/problems/split-array-largest-sum/
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int k) {
+        long sum=0;
+        int ans;
+        for(int v:nums)
+            sum+=v;
+            int l=0;
+        while(l<=sum)
+        {
+            int m=(sum+l)>>1;
+            int need=f(nums,m);
+            if(need<=k) {ans=m;sum=m-1;}
+            if(need>k)l=m+1;
+        }
+        return ans;
+    }
+    int f(vector<int >nums,int limit)
+    {
+        long sum=0;
+        int ans=1;
+        for(int v:nums)
+            if(v>limit)
+            return 51;
+        for(int v:nums)
+        {
+            if(sum+v<=limit) 
+            {
+                sum+=v;
+            }
+            else
+            {
+                sum=v;
+                ans++;
+            }
+        }
+        return ans;
+    }
+};
