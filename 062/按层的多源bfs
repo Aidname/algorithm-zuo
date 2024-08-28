@@ -1,0 +1,45 @@
+https://leetcode.cn/problems/as-far-from-land-as-possible/
+
+class Solution {
+public:
+    int move[5] = {-1, 0, 1, 0, -1};
+    int deque[10200][2];
+    int visit[102][102];
+    int maxDistance(vector<vector<int>>& grid) {
+        int sea = 0;
+        int n = grid.size();
+        int r = 0, l = 0;
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1) {
+                    visit[i][j] = 1;
+                    deque[r][0] = i;
+                    deque[r++][1] = j;
+                } else {
+                    visit[i][j] = 0;
+                    sea++;
+                }
+            }
+            if(sea==0||sea==n*n) return -1;
+        int level = 0;
+        while (l < r) {
+            level++;
+            int size = r - l;
+            for (int k = 0; k < size; k++) {
+                int x = deque[l][0];
+                int y = deque[l++][1];
+                for (int i = 0; i < 4; i++) {
+                    int nx = x + move[i];
+                    int ny = y + move[i + 1];
+                    if (nx >= 0 && ny >= 0 && nx < n && ny < n &&
+                        visit[nx][ny] == 0) {
+                        visit[nx][ny] = 1;
+                        deque[r][0] = nx;
+                        deque[r++][1] = ny;
+                    }
+                }
+            }
+        }
+        return level - 1;
+    }
+};
