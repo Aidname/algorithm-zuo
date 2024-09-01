@@ -1,0 +1,76 @@
+https://www.luogu.com.cn/problem/P4779
+
+#include<bits/stdc++.h>
+using namespace std;
+
+typedef pair<int, int> pii;
+const int MAXV = 100002;
+const int MAXE = 200002;
+
+int head[MAXV] = { 0 };
+int nxt[MAXE];
+int to[MAXE];
+int weight[MAXE];
+int cnt=1;
+
+int visit[MAXV];
+int dist[MAXV];
+priority_queue<pii, vector<pii>, greater<pii>>heap;
+
+void dijkstra()
+{
+	dist[1] = 0;
+	heap.push({ 0,1 });
+	
+	while (!heap.empty())
+	{
+		pii cur = heap.top();
+		heap.pop();
+		if (visit[cur.second]) continue;
+		visit[cur.second] = 1;
+		int v = cur.second;
+		//cout << v << endl;
+		for (int i = head[v];i>0;i=nxt[i])
+		{
+			int t = to[i];
+			int w = weight[i];
+			if (!visit[t])
+			{
+				if (dist[t] > dist[v] + w)
+				{
+					dist[t] = dist[v] + w;
+					//cout << dist[t] << " " << t << endl;
+					heap.push({ dist[t],t });
+				}
+			}
+		}
+		//break;
+	}
+}
+
+void addedge(int v, int u, int w)
+{
+	nxt[cnt] = head[v];
+	to[cnt] = u;
+	weight[cnt] = w;
+	head[v] = cnt++;
+}
+
+int main()
+{
+	int v, e;
+	int s, t, w;
+	cin >> v >> e>>s;
+	for (int i = 0; i < e; i++)
+	{
+		cin >> s >> t >> w;
+		addedge(s, t, w);
+	}
+	fill(dist, dist + v + 1, INT_MAX);
+	dijkstra();
+	for (int i = 1; i <= v; i++)
+	{
+		printf("%d ", dist[i]);
+	}
+	return 0;
+}
