@@ -1,0 +1,37 @@
+https://leetcode.cn/problems/swim-in-rising-water/
+
+typedef pair<int,int >pii;
+
+class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int move[9]={-1,0,1,0,-1,1,1,-1,-1};
+        int n=grid.size();
+        vector<int>visit(n*n,0);
+        vector<int>dist(n*n,INT_MAX);
+        priority_queue<pii,vector<pii>,greater<pii>>heap;
+        heap.push({grid[0][0],0});
+       dist[0]=0;
+        while(!heap.empty())
+        {
+            pii cur=heap.top();
+            heap.pop();
+            int id=cur.second;
+            if(visit[id])continue;
+            visit[id]=1;
+            int x=cur.second/n,y=cur.second%n,d=cur.first;
+            if(x==n-1&&y==n-1)break;
+            for(int k=0;k<4;k++)
+            {
+                int nx=x+move[k],ny=y+move[k+1];
+                id=nx*n+ny;
+                if(nx>=0&&ny>=0&&nx<n&&ny<n&&dist[id]>max(grid[nx][ny],d))
+                {
+                   dist[id]=max(d,grid[nx][ny]);
+                   heap.push({dist[id],id});
+                }
+            }           
+        }
+        return dist[(n-1)*n+n-1];
+    }
+};
