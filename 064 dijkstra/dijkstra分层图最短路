@@ -1,0 +1,45 @@
+ https://leetcode.cn/problems/DFPeFJ/
+
+class Solution {
+public:
+    int electricCarPlan(vector<vector<int>>& paths, int cnt, int start, int end, vector<int>& charge) {
+        int n=charge.size();
+        vector<vector<int >>dist(n,vector<int>(cnt+1,INT_MAX));
+        dist[start][0]=0;
+
+        vector<vector<pair<int,int>>>adj(n);
+        for(auto&path:paths)
+        {
+            int u=path[0],v=path[1],w=path[2];
+            adj[u].emplace_back(v,w);
+            adj[v].emplace_back(u,w);
+        }
+        priority_queue<tuple<int,int ,int>,vector<tuple<int,int,int>>,greater<>>pq;
+        pq.emplace(0,start,0);//1时间2城市3电力
+
+        while(!pq.empty())
+        {
+            auto[t,u,c]=pq.top();//不知道什么是auto
+            pq.pop();
+            if(t>dist[u][c])continue;//一种无向图的验证visit的方式，如果1到2，2再到1，1的时间花销一定比原来的大；
+            if(u==end)return t;//剪枝，如果已经是终点，就返回答案，堆相当于一个炉子，只需要把所有的情况放进去，会自动排出最优的情况；
+            if(c<cnt)//如果可以充电
+            {
+                if(t+charge[u]<dist[u][c+1])
+                {
+                    dist[u][c+1]=t+charge[u];
+                    pq.emplace(dist[u][c+1],u,c+1);
+                }
+            }
+            for(auto[v,w]:adj[u])//如果没充电，去下一个城市；
+            {
+                if(c>=w&&t+w<dist[v][c-w])
+                {
+                    dist[v][c-w]=t+w;
+                    pq.emplace(t+w,v,c-w);
+                }
+            }
+        }
+        return -1;
+    }
+};
