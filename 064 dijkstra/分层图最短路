@@ -1,0 +1,58 @@
+注意运算符的优先级
+https://leetcode.cn/problems/shortest-path-to-get-all-keys
+注意对容器的清空，测试平台可能是反复利用容器，如果没清空，会错
+
+const int MAXM = 31;
+const int MAXK = 6;
+int moved[5] = { -1,0,1,0,-1 };
+struct node
+{
+    int x,y,keys;
+};
+queue<node>q;
+int key;
+class Solution {
+public:
+    int shortestPathAllKeys(vector<string>& grid) {
+         key=0;
+        while (!q.empty()) q.pop();
+
+        bool visit[MAXM][MAXM][1<<MAXK];
+        int m=grid.size();
+        int n=grid[0].size();
+        for(int i=0;i<m;i++)
+        for(int j=0;j<n;j++)
+        {
+            if(grid[i][j]=='@')q.push({i,j,0});
+            if(islower(grid[i][j])) key|=(1<<(grid[i][j]-'a'));
+        }
+        memset(visit,false,sizeof(visit));
+        int level=1;
+        while(!q.empty())
+        {
+            int size=q.size();
+            for(int k=0;k<size;k++)
+            {
+                node cur=q.front();
+                q.pop();
+                int x=cur.x,y=cur.y,s=cur.keys;
+                for(int i=0;i<4;i++)
+                {
+                    int nx=x+moved[i],ny=y+moved[i+1],ns=s;
+                   if(nx<0||ny<0||nx>=m||ny>=n||grid[nx][ny]=='#') continue;
+                   if(isupper(grid[nx][ny])&&((ns&(1<<(grid[nx][ny]-'A')))==0))continue;
+                   if(islower(grid[nx][ny]))    ns|=(1<<(grid[nx][ny]-'a'));
+                   if(ns==key) return level;
+                   if(!visit[nx][ny][ns])   
+                   {
+                    visit[nx][ny][ns]=true;
+                    q.push({nx,ny,ns});
+                   }
+                 
+                }
+            }
+           level++;
+        }
+        return -1;
+    }
+};
