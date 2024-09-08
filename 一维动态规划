@@ -1,0 +1,21 @@
+https://leetcode.cn/problems/minimum-cost-for-tickets/
+
+class Solution {
+public:
+    int dur[3]={1,7,30};
+    int dp[366];
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        for(auto&v:dp)v=INT_MAX;
+        int n=days.size();
+        dp[n]=0;
+        for(int i=n-1;i>=0;i--)
+        {       
+            for(int k=0,j=i;k<3;k++)
+            {
+                while(j<n&&days[j]<days[i]+dur[k])j++;
+                dp[i]=min(dp[i],costs[k]+dp[j]);
+            }     
+        }
+        return dp[0];
+    }
+};
