@@ -1,8 +1,11 @@
 https://leetcode.cn/problems/path-with-minimum-effort/ 超数组
 lambda
+auto
 map
 tuple
 emplace
 pair
 new 
 malloc
+fill
+memset
