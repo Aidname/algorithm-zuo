@@ -21,7 +21,7 @@ public:
         {
             auto[t,u,c]=pq.top();//不知道什么是auto
             pq.pop();
-            if(t>dist[u][c])continue;//一种无向图的验证visit的方式，如果1到2，2再到1，1的时间花销一定比原来的大；
+            if(t>dist[u][c])continue;//因为堆里面是没有实时更新的，而dist有，所以堆>dist,说明遍历过
             if(u==end)return t;//剪枝，如果已经是终点，就返回答案，堆相当于一个炉子，只需要把所有的情况放进去，会自动排出最优的情况；
             if(c<cnt)//如果可以充电
             {
@@ -43,3 +43,56 @@ public:
         return -1;
     }
 };
+
+
+ https://www.luogu.com.cn/problem/P4568
+#include<bits/stdc++.h>
+using namespace std;
+
+int n, m, k, s, t;
+int build()
+{
+  	int a, b, c;
+  	vector<vector<int>>dist(n, vector<int>(k + 1, INT_MAX));
+	  priority_queue<vector<int>, vector<vector<int>>, greater<>>heap;
+  	vector < vector<pair<int, int>>>graph(n);
+
+	for (int k = 0; k < m; k++)
+	{
+	 	cin >> a >> b >> c;
+		 graph[a].emplace_back(b, c);
+	 	graph[b].emplace_back(a, c);
+	}
+	heap.push({ 0,s,0 });
+	dist[s][0] = 0;
+
+	while (!heap.empty())
+	{
+	   	vector <int>cur = heap.top();
+	   	heap.pop();
+   		int v = cur[1], cnt = cur[2], d = cur[0];
+	   	if (d > dist[v][cnt])continue;
+	   	if (v == t)return d;
+
+		   for (auto& u : graph[v])
+	   	{
+		      	int nc = u.first, nw = u.second;
+			      if (cnt<k && dist[nc][cnt + 1]>d)
+		     	{
+			     	dist[nc][cnt + 1] = d;
+			 	    heap.push({ d,nc,cnt + 1 });
+		      }
+		        if (dist[nc][cnt] > d + nw)
+			      {
+			      	dist[nc][cnt] = d + nw;
+			       	heap.push({ d + nw,nc,cnt });
+		       }
+	   	}
+	}
+ 	return -1;
+}
+int main()
+{
+	  cin >> n >> m >> k >> s >> t;
+   cout<<	build();
+}
