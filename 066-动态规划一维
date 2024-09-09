@@ -41,3 +41,24 @@ public:
        return b;
     }
 };
+
+https://leetcode.cn/problems/ugly-number-ii/
+const int MAX=1700;
+class Solution {
+public:
+    int nthUglyNumber(int n) {
+        vector<int>v(MAX);
+        v[1]=1;
+       
+        int a=1,b=1,c=1;
+        int i;
+        for(i=1;i<=n-1;i++)
+        {
+            v[i+1]=min(v[a]*2,min(v[b]*3,v[c]*5));
+            if(v[i+1]==v[a]*2)a++;
+            if(v[i+1]==v[b]*3)b++;
+            if(v[i+1]==v[c]*5)c++;
+        }
+        return v[i];
+    }
+};
