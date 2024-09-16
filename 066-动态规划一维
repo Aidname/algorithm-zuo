@@ -83,3 +83,28 @@ public:
         return max;
     }
 };
+
+https://leetcode.cn/problems/unique-substrings-in-wraparound-string/
+class Solution {
+public:
+    int findSubstringInWraproundString(string s) {
+        vector<int>ans(26,0);
+        int aa=0, n=s.size();
+        vector<int>st(n);
+        for(int i=0;i<n;i++)
+        st[i]=s[i]-'a';   
+            int len=1;
+            ans[st[0]]=1;
+            for(int j=1;j<n;j++)
+            {  
+                int pre=st[j-1],tmp=st[j];
+               if(pre+1==tmp||(tmp==0&&pre==25))
+               len++;
+               else len=1;
+               ans[tmp]=max(ans[tmp],len);
+            }  
+        for(int i=0;i<26;i++)
+         aa+=ans[i];
+         return aa;
+    }
+};
