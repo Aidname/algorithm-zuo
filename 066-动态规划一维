@@ -108,3 +108,22 @@ public:
          return aa;
     }
 };
+
+ https://leetcode.cn/problems/distinct-subsequences-ii/
+const int m=1e9+7;
+class Solution {
+public:
+    int distinctSubseqII(string s) {
+        vector<int>ans(26,0);
+        long  newadd,sum=1;
+        int n=s.size();
+        for(int i=0;i<n;i++)
+        {
+            int tmp=s[i]-'a';
+            newadd=(sum-ans[tmp]+m)%m;
+            ans[tmp]=newadd%m+ans[tmp]%m;
+            sum=(newadd%m+sum%m)%m;
+        }
+       return (sum-1+m)%m;
+    }
+};
