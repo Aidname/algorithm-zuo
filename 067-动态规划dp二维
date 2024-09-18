@@ -1,0 +1,54 @@
+ https://leetcode.cn/problems/longest-common-subsequence/
+class Solution {//用up.leftup,来压缩空间
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m=text1.size(),n=text2.size();
+        vector<int>dp(n+1,0);
+       
+        for(int i=1;i<=m;i++)
+        {int leftup=0,up;
+            for(int j=1;j<=n;j++)
+            {
+                up=dp[j];
+                if(text1[i-1]==text2[j-1])
+                dp[j]=leftup+1;
+                else
+                dp[j]=max(dp[j],dp[j-1]);
+                leftup=up;
+            }
+        }
+        return dp[n];
+    }
+};//为了避免下标越界，可以用长度来当函数参数
+
+https://leetcode.cn/problems/word-search/description/
+class Solution {
+public:
+    bool exist(vector<vector<char>>& board, string &word) {
+        int n=board.size(),m=board[0].size();
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(f(i,j,0,board,word))return true;
+            }
+        }
+        return false;
+    }
+    bool f(int i,int j,int k,vector<vector<char>>& board, string& word)
+    {
+       if(k== word.size())return true;
+       if(i<0||j<0||i==board.size()||j==board[0].size()||board[i][j]!=word[k])//防止越界
+       return false;
+       //前面的情况是如果到达word的长度，true，如果越界或者不相等，false；
+       //剩下的便是i,j点相等，
+       char tmp=board[i][j];
+       board[i][j]='0';
+       bool ans=f(i+1,j,k+1,board,word)||
+                f(i,j+1,k+1,board,word)||
+                f(i,j-1,k+1,board,word)||
+                f(i-1,j,k+1,board,word);
+        board[i][j]=tmp;        
+       return ans;
+    }
+};
