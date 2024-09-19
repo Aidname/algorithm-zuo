@@ -74,3 +74,17 @@ public:
         return dp[n-1];
     }
 };
+https://www.nowcoder.com/practice/aaefe5896cce4204b276e213e725f3ea
+const int m =1e9+7;
+
+vector<long>dp(51,0);
+int f(int cnt,int height)
+{   dp[0]=1;
+    for(int i=1;i<=height;i++)
+        for(int j=cnt;j>=1;j--)
+        {   dp[j]=0;
+           for(int k=0;k<j;k++)
+            dp[j]=(dp[j]%m+dp[k]*dp[j-k-1]%m)%m;       
+        } 
+    return dp[cnt];
+}//状态压缩的时候，dp表的调用方向符合数据的转移关系
