@@ -1,0 +1,64 @@
+https://leetcode.cn/problems/edit-distance/
+class Solution {
+public:
+    int minDistance(string word1, string word2) {
+        int n=word1.size(),m=word2.size();
+        vector<int>dp(m+1,0);
+       int up,back=0;
+       for(int i=1;i<=m;i++)dp[i]=i;
+        for(int i=1;i<=n;i++)
+        {dp[0]=i;
+        back=i-1;
+        for(int j=1;j<=m;j++)
+        {
+            up=dp[j];
+            if(word1[i-1]==word2[j-1])dp[j]=back;
+            else dp[j]=min({back,dp[j],dp[j-1]})+1;
+            back=up;
+        }}
+        return dp[m];
+    }
+};
+
+
+https://leetcode.cn/problems/distinct-subsequences/
+const int mod=1e9+7;
+class Solution {
+public:
+    int numDistinct(string s, string t) {
+        int n=s.size(),m=t.size();
+    vector<long>dp(m+1,0);
+        dp[0]=1;
+        for(int i=1;i<=n;i++)
+        for(int j=m;j>=1;j--)
+        {
+           
+            if(s[i-1]==t[j-1])dp[j]=(dp[j]+dp[j-1])%mod;
+        }
+        return dp[m];
+    }
+   
+};//对于s里面的i有多少t,可以按最后的一位分，如果最后一位组成t,看s的i-1组成t的j-1，加上s的i-1组成t的j;
+
+https://leetcode.cn/problems/interleaving-string/
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        int n=s2.size(),m=s1.size(),sum=s3.size();
+        if(n+m!=sum)return false;
+        vector<bool>dp(n+1,true);
+
+        for(int i=1;i<=n;i++ )    
+            dp[i]=dp[i-1]&&s2[i-1]==s3[i-1];
+        
+        for(int i=1;i<=m;i++)
+        {
+            dp[0]=dp[0]&&s1[i-1]==s3[i-1];
+            for(int j=1;j<=n;j++)
+            {                     
+                dp[j] = (s1[i - 1] == s3[i + j - 1] && dp[j]) || (s2[j - 1] == s3[i + j - 1] && dp[j - 1]);
+            }
+        }
+        return dp[n];
+    }
+};//||的符合可以省分配讨论,注意原始边的依赖关系
