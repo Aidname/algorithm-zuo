@@ -8,23 +8,44 @@ public:
         {
             f(s);
             for(int i=m;i>=lin;i--)
-            {
-                for(int j=n;j>=yi;j--)
-                {
+                for(int j=n;j>=yi;j--)    
                     dp[i][j]=max(dp[i][j],1+dp[i-lin][j-yi]);
-                }
-            }
         }
         return dp[m][n];
     }
     void f(string &s)
-    {   yi=0;lin=0;
-        
+    {   yi=0;lin=0;   
         for(char a:s)
         {
             if(a=='1')yi++;
             else lin++;
         }
     }
+};
 
+https://leetcode.cn/problems/profitable-schemes/
+const int mod=1e9+7;
+class Solution {
+public:
+    int profitableSchemes(int n, int minProfit, vector<int>& group, vector<int>& profit) {
+        int m=group.size();
+        vector<vector<long>>dp(n+1,vector<long>(minProfit+1,0));
+        for(int i=0;i<=n;i++)dp[i][0]=1;
+
+
+        for(int i=m-1;i>=0;i--)
+        {
+            for(int j=n;j>=0;j--)
+            {
+                for(int k=minProfit;k>=0;k--)
+                {
+                        int tmp=j-group[i];
+                        int mon=max(k-profit[i],0);
+                        if(tmp>=0)
+                        dp[j][k]=(dp[j][k]+dp[tmp][mon])%mod;
+                }
+            }
+        }
+        return dp[n][minProfit];
+    }
 };
