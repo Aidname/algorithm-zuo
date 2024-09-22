@@ -49,3 +49,40 @@ public:
         return dp[n][minProfit];
     }
 };
+
+https://leetcode.cn/problems/paths-in-matrix-whose-sum-is-divisible-by-k/description/
+const int mod =1e9+7;
+class Solution {
+public:
+    int numberOfPaths(vector<vector<int>>& grid, int k) {
+        int m=grid.size(),n=grid[0].size();
+       vector<vector<vector<long>>>dp(m,vector<vector<long>>(n,vector<long>(k,0)));
+        dp[m-1][n-1][grid[m-1][n-1]%k]=1;
+        for(int i=m-2;i>=0;i--)
+        {
+            for(int r=0;r<k;r++)
+            {
+                int need=(k+r-grid[i][n-1]%k)%k;
+                dp[i][n-1][r]=dp[i+1][n-1][need];
+            }
+        }
+        for(int j=n-2;j>=0;j--)
+        {
+            for(int r=0;r<k;r++)
+            {
+                 int need=(k+r-grid[m-1][j]%k)%k;
+                 dp[m-1][j][r]=dp[m-1][j+1][need];
+            }
+        }
+        for(int i=m-2;i>=0;i--)
+        {
+            for(int j=n-2;j>=0;j--)
+             for(int r=0;r<k;r++)
+            {
+                int need=(k+r-grid[i][j]%k)%k;
+                dp[i][j][r]=(dp[i+1][j][need]+dp[i][j+1][need])%mod;
+            }
+        }
+        return dp[0][0][0];       
+    }    
+};
