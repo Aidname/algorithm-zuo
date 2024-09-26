@@ -1,0 +1,32 @@
+https://blog.csdn.net/m0_60134435/article/details/136151698
+
+#include<bits/stdc++.h>
+using namespace std;
+
+struct item
+{
+	item(int a,int b):val(a),vol(b){}
+	int val, vol;
+};
+
+
+int main()
+{
+	int x = 3;
+	auto f = [x](int y)->int {return x + y; };//值捕获
+	auto q = [&x](int y) {return x + y;	 };//引用捕获
+	auto p = [=](int y) {return x + y; };//隐式捕获
+	x = 9;
+	auto isodd = [](int a) {return a % 2 == 1; };
+	cout << f(5) << endl;
+	cout << q(5) << endl;
+	cout << isodd(9) << endl;
+
+	vector<item>vec;
+	vec.push_back(item(1, 10));
+	vec.push_back(item(2, 5));
+	vec.push_back(item(3, 8));
+
+	sort(vec.begin(), vec.end(), [](const item& a, const item& b) {return a.vol < b.vol; });
+	for_each(vec.begin(), vec.end(), [](const item& a) {cout << a.val << " " << a.vol << endl; });
+}
