@@ -1,1 +1,93 @@
+075的多重背包优化
 
+https://www.luogu.com.cn/problem/P1776
+
+第一种，二进制拆分，转换为01背包，
+#include<bits/stdc++.h>
+using namespace std;
+
+const int MAXN = 1001;
+const int MAXW = 40001;
+
+int v[MAXN], w[MAXN];
+int n, t, m;
+
+int main()
+{
+	cin >> n >> t;
+		m = 0;
+		for (int i = 1,val,wei,cnt; i <= n; i++)
+		{
+			cin >> val >> wei >> cnt;
+			for (int k = 1; k <= cnt; k <<= 1)
+			{
+				v[++m] = k * val;
+				w[m] = k * wei;
+				cnt -= k;
+			}
+			if (cnt > 0)
+			{
+				v[++m] = cnt * val;
+				w[m] = cnt * wei;
+			}
+		}
+	
+	vector<int>dp(t + 1, 0);
+	for (int i = 1; i <= m; i++)
+		for (int j = t; j >= w[i]; j--)
+			dp[j] = max(dp[j], dp[j - w[i]] + v[i]);
+	cout<<dp[t];
+}
+第二种，优先队列，以及同种余数分组
+
+#include<bits/stdc++.h>
+using namespace std;
+
+const int MAXM = 50000;
+const int MAXN = 101;
+
+int v[MAXN];
+int w[MAXN];
+int c[MAXN];
+int que[MAXM];
+
+int val(int i, int j,vector<int>&dp)//val函数是求到第i个货物的j位置的参数
+{
+	return dp[j] - j / w[i] * v[i];
+}
+int main()
+{
+	int n, t;
+	cin >> n >> t;
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> v[i] >> w[i] >> c[i];
+	}
+	vector<int>dp(t + 1, 0);
+	for (int i = 1; i <= n; i++)
+	{
+		for (int mod = 0; mod <= min(t, w[i] - 1); mod++)//余数分组，余数的可能范围在0到物品重量-1，及w[i]-1,
+		{
+			int l = 0, r = 0;
+			for (int j = t - mod, size = 0; size < c[i] && j >= 0; size++, j -= w[i])//先在队列里面放前面依赖的值，size防止超出c[i],物品可以拿的数量，因为同余分组，j-=w[i]，
+			{
+				while (l < r && val(i, que[r - 1], dp) <= val(i, j, dp))
+					r--;
+				que[r++] = j;
+			}
+			for (int j = t - mod, enter = j - w[i] * c[i]; j >= 0; j -= w[i], enter -= w[i])
+			{
+				if (enter >= 0)//如果新入队列的越界，不用看
+				{
+					while (r > l && val(i, que[r - 1], dp) <= val(i, enter, dp))
+						r--;
+					que[r++] = enter;
+				}
+				dp[j] = val(i, que[l], dp) + j / w[i] * v[i];
+				if (que[l] == j)l++;//更新队列
+
+			}
+		}
+	}
+	cout << dp[t];
+}
