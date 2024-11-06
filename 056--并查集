@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int n, m;
+const int MAXN = 10008;
+
+int father[MAXN];
+int stackset[MAXN];
+int sizeset[MAXN];
+
+
+void build()
+{
+	for (int i = 1; i <= n; i++)
+	{
+		father[i] = i;
+		sizeset[i] = 1;
+	}
+}
+int find(int i)
+{
+	int size = 0;
+	while (i != father[i])
+	{
+		stackset[size++] = i;
+		i = father[i];
+	}
+
+	while (size>0)
+	{
+		father[stackset[--size]] = i;
+	}
+	return i;
+}
+
+void unionset(int a, int b)
+{
+	int fa = find(a);
+	int fb = find(b);
+	if (fa!=fb)
+	{
+		if (sizeset[fa] > sizeset[fb]) 
+			father[fb] = fa; 
+		else father[fa] = fb;
+		sizeset[fa] += sizeset[fb];
+		sizeset[fb] += sizeset[fb];
+	}
+}
+bool issameset(int a, int b)
+{
+	return find(a) == find(b);
+}
+int main()
+{
+	cin >> n >> m;
+	build();
+	for (int i = 0; i < m; i++)
+	{
+		int x, l, r;
+		cin >> x >> l >> r;
+		if (x == 1)
+		{
+			unionset(l, r);
+		}
+		else
+		{
+			if (issameset(l, r))cout << "Y" << endl;
+			else cout << "N" << endl;
+		}
+	}
+}
