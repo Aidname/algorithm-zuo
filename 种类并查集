@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+struct node
+{
+	int x, y, c;
+}e[100000];
+
+
+int fa[200000], re[100000];
+int n, m;
+int find(int x)
+{
+	if (fa[x] == x)return x;
+	else return fa[x] = find(fa[x]);
+}
+
+void merge(int a, int b)
+{
+	fa[find(a)] = find(b);
+}
+
+void build()
+{
+	cin >> n >> m;
+	for (int i = 1; i <= m; i++)
+	{
+		string s;
+		cin >> e[i].x >> e[i].y >> s;
+		e[i].c = s[0] =='o' ? 1 : 0;
+		re[i] = e[i].x;
+		re[i + m] = e[i].y;
+	}
+	sort(re + 1, re + 2 * m + 1);
+	n = unique(re + 1, re + 2 * m + 1) - re - 1;//unique返回的是新序列的最后的迭代器
+	for (int i = 1; i <= 2*n; i++)fa[i] = i;
+	for (int i = 1; i <= m; i++)
+	{
+		e[i].x = lower_bound(re + 1, re + n + 1, e[i].x - 1) - re;//发回迭代器
+		e[i].y = lower_bound(re + 1, re + n + 1, e[i].y) - re;
+
+		if (e[i].c == 0)//跟据前缀和，sum[r]-sum[l-1]==偶,则sum[r],sum[l-1]为偶
+		{
+			if(find(e[i].x)==find(e[i].y+n))
+			{
+				cout << i - 1; exit(0);
+			}
+			merge(e[i].x, e[i].y);
+			merge(e[i].x + n, e[i].y + n);
+		}
+		else
+		{
+			if (find(e[i].x) == find(e[i].y))
+			{
+				cout << i - 1; exit(0);
+			}
+			merge(e[i].x, e[i].y + n);
+			merge(e[i].x + n, e[i].y);
+		}
+	}
+	cout << m;
+}
+
+int main()
+{
+	build();
+}
